@@ -9,8 +9,8 @@ try {
 
   connectDb(env.mongodbUri)
     .then(() => {
-      app.listen(env.port, env.host, () => {
-        console.log(`API listening on http://${env.host}:${env.port}`);
+      app.listen(env.port, "0.0.0.0", () => {
+        console.log(`API listening on port ${env.port}`);
       });
     })
     .catch((error) => {

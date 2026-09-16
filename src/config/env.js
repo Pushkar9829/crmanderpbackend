@@ -22,7 +22,7 @@ function getEnv() {
   return {
     nodeEnv: process.env.NODE_ENV || "development",
     isProduction,
-    host: process.env.HOST || (isProduction ? "0.0.0.0" : "127.0.0.1"),
+    host: process.env.HOST || "0.0.0.0",
     port: Number(process.env.PORT) || 5050,
     mongodbUri: required("MONGODB_URI"),
     jwtSecret: required("JWT_SECRET"),
