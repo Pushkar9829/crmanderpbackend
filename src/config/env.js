@@ -6,15 +6,37 @@ function required(name) {
   return value;
 }
 
+function normalizeOrigin(value) {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return String(value || "").replace(/\/$/, "");
+  }
+}
+
 function corsOrigin() {
   const raw = process.env.CLIENT_ORIGIN || "*";
-  if (raw === "*") return true;
-  const list = raw
+  const listed = raw
     .split(",")
     .map((item) => item.trim())
-    .filter(Boolean);
-  if (list.length === 0) return true;
-  return list.length === 1 ? list[0] : list;
+    .filter(Boolean)
+    .map(normalizeOrigin);
+
+  return function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (listed.includes("*")) return callback(null, true);
+    if (listed.includes(origin)) return callback(null, true);
+
+    try {
+      const host = new URL(origin).hostname;
+      if (host.endsWith(".vercel.app")) return callback(null, true);
+      if (host === "localhost" || host === "127.0.0.1") return callback(null, true);
+    } catch {
+      /* ignore */
+    }
+
+    return callback(null, false);
+  };
 }
 
 function getEnv() {

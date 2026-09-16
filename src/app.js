@@ -8,7 +8,14 @@ function createApp() {
   const env = getEnv();
   const app = express();
 
-  app.use(cors({ origin: env.clientOrigin, credentials: true }));
+  const corsOptions = {
+    origin: env.clientOrigin,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  };
+
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.get("/api/health", (_req, res) => res.json({ ok: true }));
   app.use("/api", routes);
